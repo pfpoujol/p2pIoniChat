@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import Peer from 'peerjs';
+import {ModalController} from '@ionic/angular';
+import {ModalChatPage} from '../modal-chat/modal-chat.page';
 // import {WebrtcService} from "../webrtc.service";
 
 @Component({
@@ -11,9 +13,8 @@ export class HomePage implements OnInit {
   peer: Peer;
   otherId: string;
   private myId: string;
-  private conn: Peer.DataConnection;
-  constructor() {}
-  //constructor(public webrtcService: WebrtcService) {}
+  constructor(public modalController: ModalController) {}
+  // constructor(public webrtcService: WebrtcService) {}
   ngOnInit() {
     this.peer = new Peer();
     this.peer.on('open', (id) => {
@@ -21,26 +22,36 @@ export class HomePage implements OnInit {
       console.log(id);
     });
     this.peer.on('connection', (conn) => {
-      console.log('Connexion établie.', conn)
-      this.conn = conn;
-      this.conn.on('data', function(data) {
-        console.log('Received', data);
-      });
-    })
+      console.log('Connexion établie.', conn);
+      this.presentModal(conn);
+    });
 
   }
 
   connect() {
-    if(this.otherId) {
+    if (this.otherId) {
       console.log(this.otherId);
-      this.conn = this.peer.connect(this.otherId);
-      this.conn.on('data', function(data) {
-        console.log('Received', data);
-      });
+      const conn = this.peer.connect(this.otherId);
+      if (conn) {
+        console.log('Connexion établie.', conn);
+        this.presentModal(conn);
+      }
     }
 
   }
-  sayHi() {
-    this.conn.send('Salut !');
+
+
+  async presentModal(conn) {
+    const modal = await this.modalController.create({
+      component: ModalChatPage,
+      componentProps: {
+        conn,
+        myId: this.myId
+      }
+    });
+    modal.onDidDismiss().then(() => {
+      console.log('closed');
+    });
+    return await modal.present();
   }
 }
