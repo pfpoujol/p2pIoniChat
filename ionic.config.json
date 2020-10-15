@@ -1,5 +1,7 @@
 {
   "name": "p2pIoniChat",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
