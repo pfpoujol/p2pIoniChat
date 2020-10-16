@@ -15,37 +15,39 @@ export interface Message {
 export class ModalChatPage implements OnInit {
   @Input() conn: Peer.DataConnection;
   @Input() myId: string;
+  @Input() peer: Peer;
   messageText = '';
   messages: Array<Message> = [];
   constructor(public modalController: ModalController) { }
 
   ngOnInit() {
-    this.conn.on('data', (data) => {
-      // this.messages.push(data);
-      // this.messages = data;
-      console.log(data);
+    this.conn.on('error', (err) => {
+      console.log(err);
     });
-/*    this.conn.on('close', () => {
+    this.conn.on('data', (data) => {
+      this.messages.push(data);
+      // this.messages = data;
+      console.log(this.messages);
+    });
+    this.conn.on('close', () => {
+      console.log('conn closed');
       this.closeModal();
-    });*/
+    });
   }
+
   sendMessage() {
     if (this.messageText.trim() !== '') {
-/*      const msg = {date: new Date(), message: this.messageText, userId: this.myId};
-      this.messages.push(msg);*/
+      const msg = {date: new Date(), message: this.messageText, userId: this.myId};
+ /*     this.messages.push(msg);*/
       // this.messages.push({date: new Date(), message: this.messageText, userId: this.myId});
-      this.conn.send({date: new Date(), message: this.messageText, userId: this.myId});
-
+      this.conn.send(msg);
+      this.messages.push(msg);
       // this.justScrollToBottom(200);
       this.messageText = '';
     }
   }
-  sayHi() {
-    this.conn.send(this.messageText);
-  }
   close() {
-    // this.conn.close();
-    this.closeModal();
+    this.conn.close();
   }
   async closeModal() {
     await this.modalController.dismiss();

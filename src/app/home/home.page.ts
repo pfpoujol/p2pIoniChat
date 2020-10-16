@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import Peer from 'peerjs';
 import {ModalController} from '@ionic/angular';
 import {ModalChatPage} from '../modal-chat/modal-chat.page';
@@ -9,33 +9,38 @@ import {ModalChatPage} from '../modal-chat/modal-chat.page';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
   peer: Peer;
   otherId: string;
   private myId: string;
   constructor(public modalController: ModalController) {}
   // constructor(public webrtcService: WebrtcService) {}
   ngOnInit() {
-    this.peer = new Peer();
+    this.peer = new Peer(undefined, {debug: 3});
     this.peer.on('open', (id) => {
       this.myId = id;
       console.log(id);
     });
     this.peer.on('connection', (conn) => {
-      console.log('Connexion établie.', conn);
-      this.presentModal(conn);
+      conn.on('open', () => {
+        console.log('conn opened');
+        this.presentModal(conn);
+      });
+    });
+    this.peer.on('error', (err) => {
+      console.log(err);
     });
 
   }
 
+
   connect() {
     if (this.otherId) {
-      console.log(this.otherId);
       const conn = this.peer.connect(this.otherId);
-      if (conn) {
-        console.log('Connexion établie.', conn);
+      conn.on('open', () => {
+        console.log('conn opened');
         this.presentModal(conn);
-      }
+      });
     }
 
   }
@@ -46,12 +51,17 @@ export class HomePage implements OnInit {
       component: ModalChatPage,
       componentProps: {
         conn,
-        myId: this.myId
+        myId: this.myId,
+        peer: this.peer
       }
     });
-    modal.onDidDismiss().then(() => {
+/*    modal.onDidDismiss().then(() => {
       console.log('closed');
-    });
+    });*/
     return await modal.present();
+  }
+
+  ngOnDestroy() {
+    this.peer.destroy();
   }
 }
