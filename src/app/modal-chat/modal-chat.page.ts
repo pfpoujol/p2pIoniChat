@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ModalController} from '@ionic/angular';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {AlertController, ModalController} from '@ionic/angular';
 import Peer from 'peerjs';
 
 export interface Message {
@@ -12,21 +12,25 @@ export interface Message {
   templateUrl: './modal-chat.page.html',
   styleUrls: ['./modal-chat.page.scss'],
 })
-export class ModalChatPage implements OnInit {
+export class ModalChatPage implements OnInit, OnDestroy {
   @Input() conn: Peer.DataConnection;
   @Input() myId: string;
   @Input() peer: Peer;
   messageText = '';
   messages: Array<Message> = [];
-  constructor(public modalController: ModalController) { }
+  closeStatus = 'closedByPartner';
+  constructor(public modalController: ModalController, public alertController: AlertController) { }
 
   ngOnInit() {
+    console.log(this.conn.open)
+    this.conn.on('open', () => {
+      console.log('open');
+    })
     this.conn.on('error', (err) => {
       console.log(err);
     });
     this.conn.on('data', (data) => {
-      this.messages.push(data);
-      // this.messages = data;
+      this.messages = data.sort((a, b) => new Date(a.date).getTime()-new Date(b.date).getTime());
       console.log(this.messages);
     });
     this.conn.on('close', () => {
@@ -38,18 +42,27 @@ export class ModalChatPage implements OnInit {
   sendMessage() {
     if (this.messageText.trim() !== '') {
       const msg = {date: new Date(), message: this.messageText, userId: this.myId};
- /*     this.messages.push(msg);*/
-      // this.messages.push({date: new Date(), message: this.messageText, userId: this.myId});
-      this.conn.send(msg);
       this.messages.push(msg);
+      // this.messages.push({date: new Date(), message: this.messageText, userId: this.myId});
+      // this.conn.send(msg);
+      this.conn.send(this.messages);
+      // this.messages.push(msg);
       // this.justScrollToBottom(200);
       this.messageText = '';
     }
   }
-  close() {
+  closeConnection() {
+    this.closeStatus = 'closedByMe';
     this.conn.close();
   }
   async closeModal() {
-    await this.modalController.dismiss();
+    // Par défaut, this.closeStatus = closedByPartner
+    await this.modalController.dismiss(this.closeStatus);
   }
+  ngOnDestroy() {
+    if (this.conn.open) {
+      this.conn.close();
+    }
+  }
+
 }
