@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Pair to Pair Chat
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -20,10 +20,10 @@
       <ion-label >{{ myId }}</ion-label>
     </ion-item>
     <ion-item>
-      <ion-label>Id de l'autre</ion-label>
-      <ion-input [(ngModel)]="otherId"></ion-input>
+      <ion-label>Partenaire</ion-label>
+      <ion-input placeholder="ID du partenaire" [(ngModel)]="otherId"></ion-input>
     </ion-item>
-    <ion-button (click)="connect()">Se connecter</ion-button>
+    <ion-button (click)="connect()" [disabled]="!otherId || tryingToConnect">Contacter</ion-button>
 
   </div>
 </ion-content>

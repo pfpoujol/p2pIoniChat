@@ -1,7 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import Peer from 'peerjs';
-import {AlertController, ModalController} from '@ionic/angular';
+import {AlertController, ModalController, Platform} from '@ionic/angular';
 import {ModalChatPage} from '../modal-chat/modal-chat.page';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -12,64 +13,75 @@ export class HomePage implements OnInit, OnDestroy {
   peer: Peer;
   otherId: string;
   private myId: string;
-  constructor(public modalController: ModalController, public alertController: AlertController) {}
+  tryingToConnect = false;
+  private subscription: Subscription;
+  modalOpen = false;
+  constructor(public modalController: ModalController, public alertController: AlertController, public platform: Platform) {
+    this.exitAppOnBackBtnPress();
+  }
 
-  // A la création de la page,
+  // A la création de la page.
   ngOnInit() {
-    // instantiation de l'objet Peer avec un identifiant automatique
+    // Instantiation de l'objet Peer avec un identifiant automatique.
     this.peer = new Peer(undefined, {debug: 3});
 
-    // Récupération de l'id lorsque la connexion au PeerServer est établi.
+    // Ecoute de l'event qui signal que la connexion au PeerServer est établi : récupération de l'id.
     this.peer.on('open', (id) => {
       console.log(id);
       this.myId = id;
     });
 
-    // Ecoute pour une connexion entrante puis,
+    // Ecoute pour une connexion entrante, puis,
     this.peer.on('connection', (conn) => {
       // lorsque la connexion est ouverte, affichage du chat.
       conn.on('open', () => {
-        console.log('conn opened');
         this.presentChat(conn);
       });
     });
+    // en cas d'erreur
     this.peer.on('error', (err) => {
-      console.log(err);
-      switch(err.type) {
+      switch (err.type) {
+        // L'ID qu'on essaye de contacter n'existe pas.
         case 'peer-unavailable': {
-          this.presentAlert('Pair indisponible',
-              'Le pair avec lequel vous essayez de vous connecter n\'existe pas.')
-              .then(() => {
-            this.otherId = '';
+          this.presentAlert('Pair indisponible', 'Le pair avec lequel vous essayez de vous connecter n\'existe pas.');
+          this.otherId = '';
+          this.tryingToConnect = false;
+          break;
+        }
+        case 'server-error': {
+          this.presentAlert('Erreur serveur',
+              'Une erreur s\'est produite, essayez de recharger l\'app.').then(() => {
+            // @ts-ignore
+            navigator.app.exitApp();
           });
           break;
         }
         default: {
-          console.log(err)
+          console.log(err.type);
         }
       }
     });
-
   }
 
-
+  /**
+   * Clic bouton "Contacter".
+   */
   connect() {
-    if (this.otherId) {
-      // Connexion à un pair distant grace à son ID puis,
+      this.tryingToConnect = true;
+      // Connexion à un pair distant grace à son ID, puis,
       const conn = this.peer.connect(this.otherId);
       // lorsque la connexion est ouverte, affichage du chat.
       conn.on('open', () => {
-        console.log('conn opened');
+        this.tryingToConnect = false;
         this.presentChat(conn);
       });
-    }
-
   }
 
   /**
    * Ouverture de la fenêtre de chat en lui passant le l'objet DataConnection
    */
   async presentChat(conn: Peer.DataConnection) {
+    this.modalOpen = true;
     const modal = await this.modalController.create({
       component: ModalChatPage,
       componentProps: {
@@ -78,19 +90,20 @@ export class HomePage implements OnInit, OnDestroy {
         peer: this.peer
       }
     });
+    // à la fermeture de la fenêtre
     modal.onWillDismiss().then(() => {
       this.otherId = '';
+      this.tryingToConnect = false;
     });
     modal.onDidDismiss().then((dataReterned) => {
+      this.modalOpen = false;
       if (dataReterned) {
-        console.log(dataReterned)
         switch (dataReterned.data) {
           case 'closedByPartner' : {
             this.presentAlert('Fin de la communication', 'Votre partenaire à mis fin à la communication.');
           }
         }
       }
-      console.log('closed');
     });
     return await modal.present();
   }
@@ -103,8 +116,23 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
     await alert.present();
+    return alert.onDidDismiss();
   }
+  // Si l'application est crashée,
   ngOnDestroy() {
+    // Fermeture de la connexion au serveur et fin des connexions existantes
     this.peer.destroy();
+    this.subscription.unsubscribe();
+  }
+  exitAppOnBackBtnPress() {
+    this.subscription = this.platform.backButton.subscribeWithPriority(666666, () => {
+      if (this.constructor.name === 'HomePage' && !this.modalOpen) {
+        if (window.confirm('Etes-vous sûr de vouloir quitter d\'application ?')) {
+          this.peer.destroy();
+          // @ts-ignore
+          navigator.app.exitApp();
+        }
+      }
+    });
   }
 }

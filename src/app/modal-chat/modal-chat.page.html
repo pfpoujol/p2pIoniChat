@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-title>Discussion</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="closeConnection()">Fermer</ion-button>
+      <ion-button (click)="closeConnection()">Quitter</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -10,12 +10,7 @@
 <ion-content [fullscreen]="true">
   <div class="stream">
     <ng-container *ngFor="let message of messages; index as i">
-<!--      <div *ngIf="i === 0; then thenBlock else elseBlock"></div>
-      <ng-template #thenBlock><p class="date" >{{ message.date | date }}</p></ng-template>
-      <ng-template #elseBlock><p class="date" *ngIf="message.date.getDate() !== messages[i-1].date.getDate()">{{ message.date | date }}</p>
-      </ng-template>-->
       <ion-item lines="none" color="none">
-
         <ion-badge class="ion-text-wrap" slot="start" color="medium" *ngIf="message.userId != this.myId"><div class="name">Partenaire&nbsp;</div><div class="msg">{{ message.message }}</div><div class="time">{{ message.date | date:'shortTime' }}</div></ion-badge>
         <ion-badge class="ion-text-wrap" slot="end" color="primary" *ngIf="message.userId == this.myId"><div class="msg">{{ message.message }}</div><div class="time">{{ message.date | date:'shortTime' }}</div></ion-badge>
       </ion-item>
