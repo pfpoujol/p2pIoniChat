@@ -35,7 +35,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.peer.on('connection', (conn) => {
       // lorsque la connexion est ouverte, affichage du chat.
       conn.on('open', () => {
-        this.presentChat(conn);
+        this.presentChatModal(conn);
       });
     });
     // en cas d'erreur
@@ -73,14 +73,14 @@ export class HomePage implements OnInit, OnDestroy {
       // lorsque la connexion est ouverte, affichage du chat.
       conn.on('open', () => {
         this.tryingToConnect = false;
-        this.presentChat(conn);
+        this.presentChatModal(conn);
       });
   }
 
   /**
    * Ouverture de la fenêtre de chat en lui passant le l'objet DataConnection
    */
-  async presentChat(conn: Peer.DataConnection) {
+  async presentChatModal(conn: Peer.DataConnection) {
     this.modalOpen = true;
     const modal = await this.modalController.create({
       component: ModalChatPage,
@@ -100,12 +100,12 @@ export class HomePage implements OnInit, OnDestroy {
       if (dataReterned) {
         switch (dataReterned.data) {
           case 'closedByPartner' : {
-            this.presentAlert('Fin de la communication', 'Votre partenaire à mis fin à la communication.');
+            this.presentAlert('Fin de la communication', 'Votre partenaire à mis fin à la communication ou la connexion a été perdu.');
           }
         }
       }
     });
-    return await modal.present();
+    await modal.present();
   }
 
   async presentAlert(header: string, message: string) {
@@ -118,7 +118,28 @@ export class HomePage implements OnInit, OnDestroy {
     await alert.present();
     return alert.onDidDismiss();
   }
-  // Si l'application est crashée,
+  async presentAlertConfirmExit() {
+    const alert = await this.alertController.create({
+      header: 'Quitter',
+      message: 'Etes-vous sûr de vouloir quitter l\'application ?',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'Quitter',
+          handler: () => {
+            this.peer.destroy();
+            // @ts-ignore
+            navigator.app.exitApp();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
   ngOnDestroy() {
     // Fermeture de la connexion au serveur et fin des connexions existantes
     this.peer.destroy();
@@ -126,12 +147,8 @@ export class HomePage implements OnInit, OnDestroy {
   }
   exitAppOnBackBtnPress() {
     this.subscription = this.platform.backButton.subscribeWithPriority(666666, () => {
-      if (this.constructor.name === 'HomePage' && !this.modalOpen) {
-        if (window.confirm('Etes-vous sûr de vouloir quitter d\'application ?')) {
-          this.peer.destroy();
-          // @ts-ignore
-          navigator.app.exitApp();
-        }
+      if (this.constructor.name === 'HomePage') {
+        this.presentAlertConfirmExit();
       }
     });
   }
