@@ -16,7 +16,6 @@ export class ModalChatPage implements OnInit, OnDestroy {
   @ViewChild(IonContent, {static: false}) content: IonContent;
   @Input() conn: Peer.DataConnection;
   @Input() myId: string;
-  @Input() peer: Peer;
   messageText = '';
   messages: Array<Message> = [];
   closeStatus = 'closedByPartner';

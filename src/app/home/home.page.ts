@@ -12,7 +12,7 @@ import {Subscription} from 'rxjs';
 export class HomePage implements OnInit, OnDestroy {
   peer: Peer;
   otherId: string;
-  private myId: string;
+  myId: string;
   tryingToConnect = false;
   private subscription: Subscription;
   modalOpen = false;
@@ -22,6 +22,9 @@ export class HomePage implements OnInit, OnDestroy {
 
   // A la création de la page.
   ngOnInit() {
+    // TODO: Remove
+    // this.presentChatModalForDev();
+
     // Instantiation de l'objet Peer avec un identifiant automatique.
     this.peer = new Peer(undefined, {debug: 3});
 
@@ -35,6 +38,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.peer.on('connection', (conn) => {
       // lorsque la connexion est ouverte, affichage du chat.
       conn.on('open', () => {
+        this.tryingToConnect = false;
         this.presentChatModal(conn);
       });
     });
@@ -57,7 +61,7 @@ export class HomePage implements OnInit, OnDestroy {
           break;
         }
         default: {
-          console.log(err.type);
+          console.log(err);
         }
       }
     });
@@ -86,8 +90,7 @@ export class HomePage implements OnInit, OnDestroy {
       component: ModalChatPage,
       componentProps: {
         conn,
-        myId: this.myId,
-        peer: this.peer
+        myId: this.myId
       }
     });
     // à la fermeture de la fenêtre
@@ -107,6 +110,27 @@ export class HomePage implements OnInit, OnDestroy {
     });
     await modal.present();
   }
+
+  //TODO: Remove
+/*  async presentChatModalForDev() {
+    this.modalOpen = true;
+    const modal = await this.modalController.create({
+      component: ModalChatPage,
+      componentProps: {
+        conn: undefined,
+        myId: this.myId
+      }
+    });
+    // à la fermeture de la fenêtre
+    modal.onWillDismiss().then(() => {
+      this.otherId = '';
+      this.tryingToConnect = false;
+    });
+    modal.onDidDismiss().then(() => {
+      this.modalOpen = false;
+    });
+    await modal.present();
+  }*/
 
   async presentAlert(header: string, message: string) {
     const alert = await this.alertController.create({
