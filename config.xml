@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.epsi.p2pionichat" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>p2pIoniChat</name>
+<widget id="com.epsi.p2pionichat" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>My P2P Chat</name>
     <description>An awesome Ionic/Cordova app.</description>
-    <author email="p.poujol@epsi.fr" href="http://epsi.fr/">Pierre-Florent POUJOL</author>
+    <author email="p.poujol@epsi.fr" href="https://github.com/pfpoujol">Pierre-Florent POUJOL</author>
+    <author email="marc.guiraud@epsi.fr" href="https://github.com/marc34">Marc GUIRAUD</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />

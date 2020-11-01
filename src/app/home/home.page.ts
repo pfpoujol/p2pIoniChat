@@ -36,6 +36,7 @@ export class HomePage implements OnInit, OnDestroy {
       // Ecoute de l'event qui signal que la connexion au PeerServer est établi : récupération de l'id.
       this.peer.on('open', (newId) => {
         console.log(newId);
+        // stockage dans localStorage pour les prochaines sessions
         this.storage.set('peerId', newId);
         this.myId = newId;
       });
@@ -54,8 +55,9 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   initPeer(id: string | null) {
-    // si id=null (n'existe pas dans localstorage), un nouveau est généré
+    // si id=null (n'existe pas dans localStorage), un nouveau ID est généré
     this.peer = new Peer(id, {
+      // infos de mon PeerServer personnel
       host: '9000-ee14d333-f5e7-47a3-8953-d0c308597670.ws-eu01.gitpod.io',
       port: 443,
       path: '/',
@@ -64,7 +66,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   /**
-   * Clic bouton "Contacter".
+   * Clic bouton "Scanner" et scan.
    */
   connect(partnerId: string) {
       this.tryingToConnect = true;
