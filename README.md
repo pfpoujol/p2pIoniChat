@@ -1,8 +1,10 @@
 Informations générales
 ====
-Technologie utilisé : Ionic (Angular)
-Library utilisé : [PeerJS](https://peerjs.com/)
-Supports visés : Android
+Technologie employée : Ionic (Angular)
+
+Library utilisée : [PeerJS](https://peerjs.com/)
+
+Support visé : Android
 
 Mise en route
 ====
