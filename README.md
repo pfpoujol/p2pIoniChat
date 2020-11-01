@@ -11,10 +11,7 @@ Lien de l'apk : https://github.com/pfpoujol/p2pIoniChat/releases/tag/1.0.0
 Aperçu de l'app
 =
 ### Screenshot
-<img src="screenshot_home.jpg" alt="home" width="200"/>
-<img src="screenshot_modal_chat.jpg" alt="home" width="200"/>
-
-![home](screenshot_home.jpg =250x) ![chat](screenshot_modal_chat.jpg =250x)
+<img src="screenshot_home.jpg" alt="home" width="500"/> <img src="screenshot_modal_chat.jpg" alt="home" width="500"/>
 ### Partie importante du code
 Voir les répertoires **home** et **modal-chat** depuis [/src/app](https://github.com/pfpoujol/p2pIoniChat/tree/master/src/app).
 
