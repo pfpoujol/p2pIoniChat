@@ -188,7 +188,6 @@ export class HomePage implements OnInit, OnDestroy {
       message,
       buttons: ['OK']
     });
-
     await alert.present();
     return alert.onDidDismiss();
   }
@@ -211,9 +210,6 @@ export class HomePage implements OnInit, OnDestroy {
         }
       ]
     });
-
     await alert.present();
   }
-
-
 }

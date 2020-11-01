@@ -1,0 +1,64 @@
+.send-row {
+  min-height: 50px;
+  max-height: 100px;
+}
+ion-textarea {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  /*  min-height: 50px;
+    max-height: 100px;*/
+}
+ion-item {
+  --min-height: 40px;
+  --padding-top: 3px;
+  --padding-bottom: 3px;
+}
+ion-badge {
+  --padding-top: 4px;
+}
+
+ion-grid {
+  padding: 0!important;
+  border-top: solid 1px #d2cdcd;
+}
+.textarea-col {
+  width: 100%;
+  background: #fff;
+  resize: none;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.send-col {
+  padding: 0!important;
+}
+.send-col ion-button {
+  height: 100%!important;
+  margin: 0!important;
+  border-radius: 0 !important;
+}
+.send-col button {
+  border-radius: 0 !important;
+}
+.send-col ion-icon {
+  font-size: 20px!important;
+}
+.date {
+  text-align: center;
+}
+.time {
+  text-align: right;
+  font-weight: lighter;
+}
+.name {
+  text-align: left;
+}
+.msg {
+  white-space: pre-wrap;
+  padding-top: 6px;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-bottom: 4px;
+  text-align: left;
+  font-weight: lighter;
+}

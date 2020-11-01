@@ -28,9 +28,9 @@ export class ModalChatPage implements OnInit, OnDestroy {
   // A la création de la fenetre modale,
   ngOnInit() {
     // Ecoute de l'event pour les messages entrants.
-    this.conn.on('data', (data) => {
+    this.conn.on('data', (msg) => {
       // le nouveau message receptionné est ajouté au tableau, celui-ci est en suite trié par date
-      this.messages = this.sortMessagesWhileAdding(data);
+      this.messages.push(msg);
       this.justScrollToBottom(200);
     });
     // Ecoute de l'event signalant de la fermeture de la connexion avec le serveur P2P
@@ -44,7 +44,7 @@ export class ModalChatPage implements OnInit, OnDestroy {
     this.conn.on('close', () => {
       this.closeModal();
     });
-    // si l'autre utilisateur crash l'appli salement (connexion pas fermée
+    // si l'autre utilisateur crash l'appli salement
     this.conn.peerConnection.oniceconnectionstatechange = () => {
       if (this.conn.peerConnection.iceConnectionState === 'failed' ||
           this.conn.peerConnection.iceConnectionState === 'disconnected' ||
@@ -60,7 +60,7 @@ export class ModalChatPage implements OnInit, OnDestroy {
   sendMessage() {
     const msg = {date: new Date(), message: this.messageText, userId: this.myId};
     // ajout du message de mon coté, puis,
-    this.messages = this.sortMessagesWhileAdding(msg);
+    this.messages.push(msg);
     // envoi du message à l'autre participant via le serveur P2P
     this.conn.send(msg);
 
