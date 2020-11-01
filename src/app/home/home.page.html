@@ -1,23 +1,44 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button disabled="true" class="disable-ripple">
+        <ion-icon color="light" name="chatbubbles-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+<!--    <ion-icon slot="iconOnly"></ion-icon>-->
     <ion-title>
-      Pair to Pair Chat
+      My Pair to Pair Chat
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="presentAlertConfirmExit()">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content>
+  <ion-icon src="/assets/icon/p2p.png"></ion-icon>
+  <div id="container" *ngIf="myId">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Votre code d'identification</ion-card-title>
+      </ion-card-header>
+      <qrcode [qrdata]="myId" width="256" errorCorrectionLevel="M"></qrcode>
+      <ion-card-content>
+        Pour commencer le chat scanner le QRcode de votre partenaire ou montrez lui le votre.
+      </ion-card-content>
+    </ion-card>
 
-
-  <div id="container">
-    <ion-item *ngIf="myId">
-      <ion-label > ID : </ion-label>
-      <ion-input readonly="true" [(ngModel)]="myId"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label>Partenaire :</ion-label>
-      <ion-input placeholder="ID du partenaire" [(ngModel)]="otherId"></ion-input>
-    </ion-item>
-    <ion-button class="button" color="primary" (click)="connect()" [disabled]="!otherId || tryingToConnect">Contacter</ion-button>
+    <ion-button class="ion-margin-top" color="primary" (click)="scanCode()" [disabled]="tryingToConnect">
+      <ion-icon slot="start" name="camera-outline"></ion-icon>
+      Scanner
+    </ion-button>
   </div>
 </ion-content>
+<footer>
+  <ion-toolbar class="ion-margin-start ion-align-items-center">
+    <ion-text color="medium"><p>Equipe : Pierre-Florent POUJOL & Marc GUIRAUD</p></ion-text>
+  </ion-toolbar>
+
+</footer>

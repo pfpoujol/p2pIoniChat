@@ -3,6 +3,8 @@ import Peer from 'peerjs';
 import {AlertController, ModalController, Platform} from '@ionic/angular';
 import {ModalChatPage} from '../modal-chat/modal-chat.page';
 import {Subscription} from 'rxjs';
+import {Storage} from '@ionic/storage';
+import {BarcodeScanner} from '@ionic-native/barcode-scanner/ngx';
 
 @Component({
   selector: 'app-home',
@@ -11,69 +13,63 @@ import {Subscription} from 'rxjs';
 })
 export class HomePage implements OnInit, OnDestroy {
   peer: Peer;
-  otherId: string;
-  myId: string;
+  myId: string = null;
   tryingToConnect = false;
-  private subscription: Subscription;
   modalOpen = false;
-  constructor(public modalController: ModalController, public alertController: AlertController, public platform: Platform) {
+
+  private subscription: Subscription;
+
+  constructor(public modalController: ModalController,
+              public alertController: AlertController,
+              public platform: Platform,
+              public storage: Storage,
+              public barcodeScanner: BarcodeScanner) {
     this.exitAppOnBackBtnPress();
   }
 
   // A la création de la page.
   ngOnInit() {
-    // TODO: Remove
-    // this.presentChatModalForDev();
+    this.storage.get('peerId').then(id => {
+      // Instantiation de l'objet Peer
+      this.initPeer(id);
 
-    // Instantiation de l'objet Peer avec un identifiant automatique.
-    this.peer = new Peer(undefined, {debug: 3});
-
-    // Ecoute de l'event qui signal que la connexion au PeerServer est établi : récupération de l'id.
-    this.peer.on('open', (id) => {
-      console.log(id);
-      this.myId = id;
-    });
-
-    // Ecoute pour une connexion entrante, puis,
-    this.peer.on('connection', (conn) => {
-      // lorsque la connexion est ouverte, affichage du chat.
-      conn.on('open', () => {
-        this.tryingToConnect = false;
-        this.presentChatModal(conn);
+      // Ecoute de l'event qui signal que la connexion au PeerServer est établi : récupération de l'id.
+      this.peer.on('open', (newId) => {
+        console.log(newId);
+        this.storage.set('peerId', newId);
+        this.myId = newId;
       });
-    });
-    // en cas d'erreur
-    this.peer.on('error', (err) => {
-      switch (err.type) {
-        // L'ID qu'on essaye de contacter n'existe pas.
-        case 'peer-unavailable': {
-          this.presentAlert('Pair indisponible', 'Le pair avec lequel vous essayez de vous connecter n\'existe pas.');
-          this.otherId = '';
+
+      // Ecoute pour une connexion entrante, puis,
+      this.peer.on('connection', (conn) => {
+        // lorsque la connexion est ouverte, affichage du chat.
+        conn.on('open', () => {
           this.tryingToConnect = false;
-          break;
-        }
-        case 'server-error': {
-          this.presentAlert('Erreur serveur',
-              'Une erreur s\'est produite, essayez de recharger l\'app.').then(() => {
-            // @ts-ignore
-            navigator.app.exitApp();
-          });
-          break;
-        }
-        default: {
-          console.log(err);
-        }
-      }
+          this.presentChatModal(conn);
+        });
+      });
+      // en cas d'erreur
+      this.onPeerError();
+    });
+  }
+
+  initPeer(id: string | null) {
+    // si id=null (n'existe pas dans localstorage), un nouveau est généré
+    this.peer = new Peer(id, {
+      host: '9000-ee14d333-f5e7-47a3-8953-d0c308597670.ws-eu01.gitpod.io',
+      port: 443,
+      path: '/',
+      secure: true
     });
   }
 
   /**
    * Clic bouton "Contacter".
    */
-  connect() {
+  connect(partnerId: string) {
       this.tryingToConnect = true;
       // Connexion à un pair distant grace à son ID, puis,
-      const conn = this.peer.connect(this.otherId);
+      const conn = this.peer.connect(partnerId);
       // lorsque la connexion est ouverte, affichage du chat.
       conn.on('open', () => {
         this.tryingToConnect = false;
@@ -95,7 +91,6 @@ export class HomePage implements OnInit, OnDestroy {
     });
     // à la fermeture de la fenêtre
     modal.onWillDismiss().then(() => {
-      this.otherId = '';
       this.tryingToConnect = false;
     });
     modal.onDidDismiss().then((dataReterned) => {
@@ -111,26 +106,81 @@ export class HomePage implements OnInit, OnDestroy {
     await modal.present();
   }
 
-  //TODO: Remove
-/*  async presentChatModalForDev() {
-    this.modalOpen = true;
-    const modal = await this.modalController.create({
-      component: ModalChatPage,
-      componentProps: {
-        conn: undefined,
-        myId: this.myId
+  /**
+   * Ouverture de l'appareil photo pour scanner le QCcode du partenaire et s'y connecter
+   */
+  scanCode() {
+    this.barcodeScanner
+        .scan()
+        .then(barcodeData => {
+          if (!barcodeData.cancelled) {
+            if (barcodeData.format === 'QR_CODE' && barcodeData.text !== '') {
+              // Tentative de connexion si QRcode conforme;
+              this.connect(barcodeData.text);
+            } else if (barcodeData.text === '') {
+              this.presentAlert('QR code erroné', 'QR codes ilisible');
+            } else {
+              this.presentAlert('QR code erroné', 'Seul les QR codes sont autorisés.');
+            }
+          }
+        })
+        .catch(err => {
+          console.log('Error', err);
+        });
+  }
+
+  onPeerError() {
+    this.peer.on('error', (err) => {
+      switch (err.type) {
+          // L'ID qu'on essaye de contacter n'existe pas.
+        case 'peer-unavailable': {
+          this.presentAlert('Pair indisponible', 'Le pair avec lequel vous essayez de vous connecter n\'existe pas.');
+          this.tryingToConnect = false;
+          break;
+        }
+        case 'server-error': {
+          this.presentAlert('Erreur PeerServer',
+              'Une erreur s\'est produite, essayez de recharger l\'app.').then(() => {
+            // @ts-ignore
+            navigator.app.exitApp();
+          });
+          break;
+        }
+        case 'unavailable-id': {
+          this.presentAlert('ID indisponible', 'L\'ID généré est déjà, rechargez l\'app, un nouveau vous sera attribué.').then(() => {
+            // @ts-ignore
+            this.storage.clear().then(() => navigator.app.exitApp());
+          });
+          break;
+        }
+        case 'network': {
+          this.presentAlert('Erreur PeerServer',
+              'La connexion avec le serveur a été perdu, veuillez relancer le PeerServer.').then(() => {
+            // @ts-ignore
+            navigator.app.exitApp();
+          });
+          break;
+        }
+        default: {
+          console.log(err);
+          console.log(err.type);
+        }
       }
     });
-    // à la fermeture de la fenêtre
-    modal.onWillDismiss().then(() => {
-      this.otherId = '';
-      this.tryingToConnect = false;
+  }
+
+  ngOnDestroy() {
+    // Fermeture de la connexion au serveur et fin des connexions existantes
+    this.peer.destroy();
+    this.subscription.unsubscribe();
+  }
+  exitAppOnBackBtnPress() {
+    this.subscription = this.platform.backButton.subscribeWithPriority(666666, () => {
+      if (this.constructor.name === 'HomePage') {
+        this.presentAlertConfirmExit();
+      }
     });
-    modal.onDidDismiss().then(() => {
-      this.modalOpen = false;
-    });
-    await modal.present();
-  }*/
+  }
 
   async presentAlert(header: string, message: string) {
     const alert = await this.alertController.create({
@@ -164,16 +214,6 @@ export class HomePage implements OnInit, OnDestroy {
 
     await alert.present();
   }
-  ngOnDestroy() {
-    // Fermeture de la connexion au serveur et fin des connexions existantes
-    this.peer.destroy();
-    this.subscription.unsubscribe();
-  }
-  exitAppOnBackBtnPress() {
-    this.subscription = this.platform.backButton.subscribeWithPriority(666666, () => {
-      if (this.constructor.name === 'HomePage') {
-        this.presentAlertConfirmExit();
-      }
-    });
-  }
+
+
 }

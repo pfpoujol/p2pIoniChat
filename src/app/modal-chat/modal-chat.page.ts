@@ -70,7 +70,8 @@ export class ModalChatPage implements OnInit, OnDestroy {
   sortMessagesWhileAdding(newMsg: Message): Array<Message> {
     const clonedMessages = [...this.messages];
     clonedMessages.push(newMsg);
-    return clonedMessages.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    // return clonedMessages.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return clonedMessages;
   }
 
   /**

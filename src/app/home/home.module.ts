@@ -5,7 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
-import {ModalChatPageModule} from "../modal-chat/modal-chat.module";
+import {ModalChatPageModule} from '../modal-chat/modal-chat.module';
+import {BarcodeScanner} from '@ionic-native/barcode-scanner/ngx';
+import {QRCodeModule} from 'angularx-qrcode';
 
 
 @NgModule({
@@ -14,8 +16,10 @@ import {ModalChatPageModule} from "../modal-chat/modal-chat.module";
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    ModalChatPageModule
+    ModalChatPageModule,
+    QRCodeModule
   ],
-  declarations: [HomePage]
+  declarations: [HomePage],
+  providers: [BarcodeScanner]
 })
 export class HomePageModule {}
