@@ -1,3 +1,9 @@
+Informations générales
+====
+Technologie utilisé : Ionic (Angular)
+Library utilisé : [PeerJS](https://peerjs.com/)
+Supports visés : Android
+
 Mise en route
 ====
 ### Executer PeerServer
