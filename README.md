@@ -1,0 +1,21 @@
+Mise en route
+====
+### Executer PeerServer
+Pour executer le serveur, il faut d'abord se connecter sur [Gitpod](https://gitpod.io/login/) avec le compte GitHub fourni.
+
+Lancer le serveur : https://gitpod.io/start/#be67f35d-dfc8-49a4-973f-2fa9e7406ae1
+
+### Installer l'apk
+Lien de l'apk : https://github.com/pfpoujol/p2pIoniChat/releases/tag/1.0.0
+
+Aperçu de l'app
+=
+### Screenshot
+<img src="screenshot_home.jpg" alt="home" width="200"/>
+<img src="screenshot_modal_chat.jpg" alt="home" width="200"/>
+
+![home](screenshot_home.jpg =250x) ![chat](screenshot_modal_chat.jpg =250x)
+### Partie importante du code
+Voir les répertoires **home** et **modal-chat** depuis [/src/app](https://github.com/pfpoujol/p2pIoniChat/tree/master/src/app).
+
+

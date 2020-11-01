@@ -58,7 +58,7 @@ export class HomePage implements OnInit, OnDestroy {
     // si id=null (n'existe pas dans localStorage), un nouveau ID est généré
     this.peer = new Peer(id, {
       // infos de mon PeerServer personnel
-      host: '9000-ee14d333-f5e7-47a3-8953-d0c308597670.ws-eu01.gitpod.io',
+      host: '9000-be67f35d-dfc8-49a4-973f-2fa9e7406ae1.ws-eu01.gitpod.io',
       port: 443,
       path: '/',
       secure: true
