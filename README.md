@@ -17,6 +17,8 @@ Lancer le serveur : https://gitpod.io/start/#be67f35d-dfc8-49a4-973f-2fa9e7406ae
 ### Installer l'application
 Lien de l'apk : https://github.com/pfpoujol/p2pIoniChat/releases/tag/1.0.0
 
+Veillez bien à ce que le serveur soit toujours actif lorsque vous utilisez l'application.
+
 Aperçu de l'app
 =
 Voir les répertoires **home** et **modal-chat** depuis [/src/app](https://github.com/pfpoujol/p2pIoniChat/tree/master/src/app).
