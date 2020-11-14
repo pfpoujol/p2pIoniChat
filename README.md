@@ -4,7 +4,8 @@ Informations générales
 - Library utilisée : [PeerJS](https://peerjs.com/)
 - Support visé : Android
 
-Pour faciliter les connexions et contourner les problématiques réseaux, l'application se connecte également à un serveur ([PeerServer](https://github.com/peers/peerjs-server/blob/master/README.md#peerserver-a-server-for-peerjs)). À noter qu'aucune donnée peer-to-peer ne passe par ce serveur, celui-ci agit uniquement en tant que médiateur de connexion. Il est ainsi possible de s'envoyer des messages entre 2 appareils, même si ces derniers ne sont pas connectés sur le même réseau.
+Pour faciliter les connexions et contourner les problématiques réseaux, l'application se connecte également à un serveur ([PeerServer](https://github.com/peers/peerjs-server/blob/master/README.md#peerserver-a-server-for-peerjs)). 
+À noter qu'aucune donnée peer-to-peer ne passe par ce serveur, celui-ci agit uniquement en tant que médiateur de connexion. Il est ainsi possible de s'envoyer des messages entre 2 appareils, même si ces derniers ne sont pas connectés sur le même réseau.
 
 Mise en route
 ====
