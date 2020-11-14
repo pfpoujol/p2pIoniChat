@@ -4,6 +4,8 @@ Informations générales
 - Library utilisée : [PeerJS](https://peerjs.com/)
 - Support visé : Android
 
+Pour faciliter les connexions et contourner les problématiques réseaux, l'application se connecte également à un serveur (PeerServer). À noter qu'aucune donnée peer-to-peer ne passe par ce serveur, celui-ci agit uniquement en tant que médiateur de connexion. Il est ainsi possible de s'envoyer des messages entre 2 appareils, même si ces derniers ne sont pas connectés sur le même réseau.
+
 Mise en route
 ====
 ### Executer PeerServer
@@ -11,7 +13,7 @@ Pour executer le serveur, il faut d'abord se connecter sur [Gitpod](https://gitp
 
 Lancer le serveur : https://gitpod.io/start/#be67f35d-dfc8-49a4-973f-2fa9e7406ae1
 
-### Installer l'apk
+### Installer l'application
 Lien de l'apk : https://github.com/pfpoujol/p2pIoniChat/releases/tag/1.0.0
 
 Aperçu de l'app
