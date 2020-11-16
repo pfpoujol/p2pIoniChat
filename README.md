@@ -15,7 +15,7 @@ Pour executer le serveur, il faut d'abord se connecter sur [Gitpod](https://gitp
 Lancer le serveur : https://gitpod.io/start/#adefbe53-93f1-48f5-b7ed-99ee94ae0a05
 
 ### Installer l'application
-Lien de l'apk : https://github.com/pfpoujol/p2pIoniChat/releases/tag/1.0.0
+Lien de l'apk : https://github.com/pfpoujol/p2pIoniChat/releases/tag/1.0.1
 
 Veillez bien à ce que le serveur soit toujours actif lorsque vous utilisez l'application.
 
