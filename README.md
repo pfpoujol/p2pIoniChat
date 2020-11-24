@@ -10,9 +10,7 @@ Pour faciliter les connexions et contourner les problématiques réseaux, l'appl
 Mise en route
 ====
 ### Executer PeerServer
-Pour executer le serveur, il faut d'abord se connecter sur [Gitpod](https://gitpod.io/login/) avec le compte GitHub fourni.
-
-Lancer le serveur : https://gitpod.io/start/#adefbe53-93f1-48f5-b7ed-99ee94ae0a05
+Pour executer le serveur, il faut d'abord se connecter sur [Gitpod](https://gitpod.io/login/) avec le compte GitHub fourni puis lancer le serveur en cliquant sur Start.
 
 ### Installer l'application
 Lien de l'apk : https://github.com/pfpoujol/p2pIoniChat/releases/tag/1.0.1
