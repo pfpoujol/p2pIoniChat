@@ -9,20 +9,20 @@ Pour faciliter les connexions et contourner les problématiques réseaux, l'appl
 
 Mise en route
 ====
-### Executer PeerServer
-Pour executer le serveur, il faut d'abord se connecter sur [Gitpod](https://gitpod.io/login/) avec le compte GitHub fourni.
+### Executez un PeerServer
+Lancez votre propre serveur sur Gitpod.
 
-Lancer le serveur : https://gitpod.io/start/#adefbe53-93f1-48f5-b7ed-99ee94ae0a05
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/peers/peerjs-server)
 
-### Installer l'application
-Lien de l'apk : https://github.com/pfpoujol/p2pIoniChat/releases/tag/1.0.0
+Dans le fichier ``peerserver-credentials.ts``, remplacez l'url de la ligne *host* par celui de votre serveur.
+
+### Créez votre application Android
+Commande :```ionic cordova run andoid```
 
 Veillez bien à ce que le serveur soit toujours actif lorsque vous utilisez l'application.
 
-Aperçu de l'app
-=
-Voir les répertoires **home** et **modal-chat** depuis [/src/app](https://github.com/pfpoujol/p2pIoniChat/tree/master/src/app).
-### Screenshot
+Screenshot
+===
 <img src="screenshot_home.jpg" alt="home" width="500"/> <img src="screenshot_modal_chat.jpg" alt="home" width="500"/>
 
 

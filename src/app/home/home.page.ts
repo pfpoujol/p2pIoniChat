@@ -5,6 +5,7 @@ import {ModalChatPage} from '../modal-chat/modal-chat.page';
 import {Subscription} from 'rxjs';
 import {Storage} from '@ionic/storage';
 import {BarcodeScanner} from '@ionic-native/barcode-scanner/ngx';
+import {PeerServerCredentials} from '../peerserver-credentials';
 
 @Component({
   selector: 'app-home',
@@ -56,13 +57,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   initPeer(id: string | null) {
     // si id=null (n'existe pas dans localStorage), un nouveau ID est généré
-    this.peer = new Peer(id, {
-      // infos de mon PeerServer personnel
-      host: '9000-adefbe53-93f1-48f5-b7ed-99ee94ae0a05.ws-eu01.gitpod.io',
-      port: 443,
-      path: '/',
-      secure: true
-    });
+    this.peer = new Peer(id, PeerServerCredentials);
   }
 
   /**
